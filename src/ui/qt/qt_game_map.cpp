@@ -80,10 +80,10 @@ biv::os::UserInput QtGameMap::get_input() {
 		return biv::os::UserInput::EXIT;
 	}
 	if (pressed_keys.contains(Qt::Key_Left) || pressed_keys.contains(Qt::Key_A)) {
-		return biv::os::UserInput::MAP_LEFT;
+		return biv::os::UserInput::MAP_RIGHT;
 	}
 	if (pressed_keys.contains(Qt::Key_Right) || pressed_keys.contains(Qt::Key_D)) {
-		return biv::os::UserInput::MAP_RIGHT;
+		return biv::os::UserInput::MAP_LEFT;
 	}
 	if (pressed_keys.contains(Qt::Key_Space) || pressed_keys.contains(Qt::Key_Up) || pressed_keys.contains(Qt::Key_W)) {
 		return biv::os::UserInput::MARIO_JUMP;

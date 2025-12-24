@@ -38,6 +38,7 @@ void QtUIObjectRectAdapter::draw(QPainter* painter) const {
 
 bool QtUIObjectRectAdapter::is_active() const noexcept {
     return true;
+}
 
 void QtUIObjectRectAdapter::paint(QPainter* painter) {
     draw(painter);

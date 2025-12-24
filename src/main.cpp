@@ -14,7 +14,8 @@
 */
 #include <thread>
 
-#include "console_ui_factory.hpp"
+#include "qt_ui_factory.hpp"
+#include "qt_game_map.hpp"
 #include "first_level.hpp"
 #include "game.hpp"
 #include "game_level.hpp"
@@ -24,21 +25,19 @@
 #include "ui_factory.hpp"
 #include "user_input.hpp"
 
-int main() {
-	// 1. Установка параметров игры
+int main(int argc, char *argv[]) {
 	using namespace std::chrono_literals;
-	biv::os::init_settings();
+	biv::os::init_settings(argc, argv);
 	
 	biv::Game game;
-	biv::UIFactory* ui_factory = new biv::ConsoleUIFactory(&game);
+	biv::UIFactory* ui_factory = new biv::QtUIFactory(&game);
 	biv::GameMap* game_map = ui_factory->get_game_map();
 	biv::GameLevel* game_level = new biv::FirstLevel(ui_factory);
 	biv::Mario* mario = ui_factory->get_mario();
 	
 	biv::os::UserInput user_input;
 	do {
-		// 2. Получение пользовательского ввода	
-		user_input = biv::os::get_user_input();
+		user_input = dynamic_cast<biv::QtGameMap*>(game_map)->get_input();
 		switch (user_input) {
 			case biv::os::UserInput::MAP_LEFT:
 				mario->move_map_left();
@@ -60,9 +59,10 @@ int main() {
 			case biv::os::UserInput::EXIT:
 				game.finish();
 				break;
+            default:
+                break;
 		}
 		
-		// 3. Обновление внутреннего состояния игры
 		game.move_objs_horizontally();
 		game.check_horizontally_static_collisions();
 		
@@ -75,6 +75,7 @@ int main() {
 			|| !mario->is_active()
 		) {
 			game_level->restart();
+			game.start_level();
 			mario = ui_factory->get_mario();
 			std::this_thread::sleep_for(1000ms);
 		}
@@ -90,16 +91,13 @@ int main() {
 			}
 		}
 		
-		// 4. Обновление изображения на экране
 		game_map->refresh();
 		biv::os::set_cursor_start_position();
 		game_map->show();
 		std::this_thread::sleep_for(10ms);
 	} while (
-		/* 5. Проверка того, не окончена ли игра */ 
 		!game.is_finished()
 	);
 	
-	// 6. Завершение
-	
+	return 0;
 }

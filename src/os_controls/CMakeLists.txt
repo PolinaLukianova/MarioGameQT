@@ -1,2 +1,7 @@
 add_subdirectory(os_api)
-add_subdirectory(windows)
+
+if(WIN32)
+	add_subdirectory(windows)
+else()
+	add_subdirectory(unix)
+endif()
